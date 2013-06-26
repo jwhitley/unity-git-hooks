@@ -1,0 +1,20 @@
+#!/bin/zsh
+
+prev_head="$1"
+new_head="$2"
+flag="$3"
+
+if [[ $flag -eq 1 ]]; then
+  git fetch origin
+
+  local_sha=`git show-ref -s refs/heads/master`
+  remote_sha=`git show-ref -s origin/master`
+
+  echo "master: $local_sha"
+  echo "origin/master: $remote_sha"
+
+  if [[ "$prev_head" != "$new_head" && "$local_sha" != "$remote_sha" ]]; then
+      echo "WARNING: master is out of date w.r.t. origin/master"
+    fi
+  fi
+fi
