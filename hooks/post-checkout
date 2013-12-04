@@ -4,17 +4,28 @@ prev_head="$1"
 new_head="$2"
 flag="$3"
 
+# echo "flag: $flag"
+# echo "prev_head: $prev_head"
+# echo "new_head: $new_head"
+
+current_branch () {
+  git rev-parse --abbrev-ref HEAD
+}
+
+
 if [[ $flag -eq 1 ]]; then
-  git fetch origin
+  if [[ "`current_branch`" == master ]]; then
+    echo "Bringing master up-to-date..."
+    git pull origin
+  else
+    echo "Bringing origin/master up-to-date..."
+    git fetch origin
+  fi
 
   local_sha=`git show-ref -s refs/heads/master`
   remote_sha=`git show-ref -s origin/master`
 
-  echo "master: $local_sha"
-  echo "origin/master: $remote_sha"
-
-  if [[ "$prev_head" != "$new_head" && "$local_sha" != "$remote_sha" ]]; then
+  if [[ "$local_sha" != "$remote_sha" ]]; then
       echo "WARNING: master is out of date w.r.t. origin/master"
-    fi
   fi
 fi
